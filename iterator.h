@@ -2,31 +2,60 @@
 #define ITERATOR_H
 
 #include "node.h"
-
+#include <stack>
 template <typename T> 
 class Iterator {
     private:
         Node<T> *current;
+        stack<Node<T>*> stack_de_iterador;
 
     public:
         Iterator() {
-            // TODO
+            current=nullptr;
         }
 
-        Iterator(Node<T> *node) {
-            // TODO
+        Iterator(Node<T> *node,int flag) {
+            if (flag==0){
+                while(node){
+                    stack_de_iterador.push(node);
+                    node=node->left;
+                }
+            }else{
+                while(node){
+                    node=node->right;
+                }
+            }
+            this->current=node;
+
         }
 
         Iterator<T>& operator=(const Iterator<T> &other) {          
-            // TODO
+            current=other->current;
+            return *this;
         }
 
         bool operator!=(Iterator<T> other) {
-            // TODO
+            if (current!=other.current){
+                return true;
+            }else{
+                return false;
+            }
         }
 
         Iterator<T>& operator++() {
-            // TODO
+            Node<T>* temporal=stack_de_iterador.top();
+            stack_de_iterador.pop();
+            if (temporal->right){
+                stack_de_iterador.push(temporal->right);
+                while (stack_de_iterador.top()->left ){
+                    stack_de_iterador.push(stack_de_iterador.top()->left);
+                }
+            }
+            if (stack_de_iterador.empty()==false){
+                current=stack_de_iterador.top();
+            }else{
+                current==nullptr;
+            }
         }
 
         Iterator<T>& operator--() {
@@ -34,7 +63,11 @@ class Iterator {
         }
 
         T operator*() {
-            // TODO
+            if(current){
+                return current->data;
+            }else{
+                cout<<"out of range"<<endl;
+            }
         }
 };
 

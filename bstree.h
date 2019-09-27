@@ -49,6 +49,14 @@ class BSTree {
         }
     }
 
+    void deleteNodo(Node<T> *nodo){
+        if (nodo!=nullptr){
+            deleteNodo(nodo->left);
+            deleteNodo(nodo->right);
+            delete this;
+        }
+    }
+
     public:
         BSTree() : root(nullptr),sizes(0),heights(0) {};
 
@@ -113,146 +121,122 @@ class BSTree {
         }
 
         bool remove(T data) {
-            Node<T> *data1=root;
-            Node<T> *padre1=nullptr;
             if (root==nullptr){
-                return false;
+                return false; 
             }
-            if (sizes==1 && data==root->data){
-                cout<<"CASO1"<<endl;
-                auto temporal=root; 
-                root=nullptr;
-                sizes--;
-                delete temporal;
-                return true;
-            }
-            
+            Node<T> *padre1=root;
+            Node<T> *data1=root;
             while (data1->data!=data){
-                if (data<=data1->data){
-                    if (data1->left!=nullptr){
-                        padre1=data1;
-                        data1=data1->left;
-                    }else{
-                        return false; 
-                    }
-                }else{
+                if (data>data1->data){
                     if (data1->right!=nullptr){
                         padre1=data1;
                         data1=data1->right;
                     }else{
                         return false;
                     }
+                }else{
+                    if (data1->left!=nullptr){
+                        padre1=data1;
+                        data1=data1->left;
+                    }else{
+                        return false;
+                    }
                 }
             }
-            cout<<"data es"<<data1->data<<endl;
-            if (padre1!=nullptr){
-                cout<<"padre es"<<padre1->data<<endl;
-            
-            }else{
-                cout<<"el padre del root no existe "<<endl;
-            }
+            cout<<"padre1 "<<padre1->data<<endl;
+            cout<<"data1 "<<data1->data<<endl;
             Node<T> *data2=data1;
-            Node<T> *padre2=nullptr;
-            if (data2->left==nullptr && data2->right==nullptr){
-                cout<<"no tiene hijos"<<endl;
-                if (padre1->right!=nullptr){
-                    if (padre1->right->data==data ){
-                        cout<<"CASO2"<<endl;
-                        padre1->right=nullptr;
-                        delete data2;
-                        sizes--;
-                        return true;
-                    }   
-                }
-                if (padre1->left!=nullptr){
-                    if (padre1->left->data==data ){
-                        cout<<"CASO3"<<endl;
-                        padre1->left =nullptr;
+            Node<T> *padre2=data2;
+            if (data1==root){
+                if (sizes==1){
+                    delete root;
+                    root=nullptr;
+                }else{
+                    //here goes if the data is  the root 
+                    if (data1->right!=nullptr){
+                        if(data1->left==nullptr){
+                            root=data1->right;
+                        }else{
+                            data2=data2->left; 
+                            while(data2->right!=nullptr){
+                                padre2=data2;
+                                data2=data2->right; 
+                            }
+                            cout<<"padre2 "<<padre2->data<<endl;
+                            cout<<"data2 "<<data2->data<<endl;
+                            data1->data=data2->data;
+                            if(padre2->right==data2){
+                                padre2->right=data2->left;
+                            }else{
+                                padre2->left=data2->left;
+                            }  
+                        }
+                    }else{
+                        if (data1->left!=nullptr){
+                            root=data2->left;
+                        }
                         delete data2;
                         sizes--;
                         return true;
                     }
+                    
+
                 }
+
+                //here goes if the data is not the root
             }else{
-                if (data2->left!=nullptr){
-                    padre2=data2;
-                    data2=data2->left;
+                if (data1->left==nullptr){
+                    if (data1->right==nullptr){
+                        if (padre1->left==data1){
+                            padre1->left=nullptr;
+                        }else{
+                            padre1->right=nullptr;
+                        }
+                        delete data1;
+                    }else{
+                        if (padre1->right==data1){
+                            padre1->right=data1->right;
+                        }else{
+                            padre1->left=data1->right;
+                        }
+                        delete data1;
+                    }
                 }else{
-                    cout<<"NO SE QUE ESTA PASANDO"<<endl;
-                    cout<<"data2 es "<<data2->right->data<<endl; 
-                    auto dataaaa=data2->right;
-                    cout<<"CASO3.9"<<endl;
-                    if (padre1->right!=nullptr && padre1!=nullptr){
-                        if (padre1->right->right==dataaaa){  
-                            padre1->right=dataaaa;
-                            cout<<"CASO4"<<endl;
-                            delete data2;
-                            sizes--;
-                            return true;
+                    if (data1->right==nullptr ){
+                        if (padre1->right==data1){
+                            padre1->right=data1->left;
                         }
                         else{
-                            if (padre1->left->right==dataaaa && padre1!=nullptr){
-                                cout<<"CASO 5"<<endl;
-                                padre1->left=dataaaa;
-                                sizes--;
-                                delete data2;
-                                return true;
-                            }
-                    
+                            padre1->left=data1->left;
                         }
-                    }
-                    
-                }
-                
-                while (data2->right!=nullptr){
-                    padre2=data2;
-                    data2=data2->right;
-                }
-                cout<<"data2 "<<data2->data<<endl;
-                if (padre2!=nullptr){
-                    cout<<"padre2 "<<padre2->data<<endl;
-                }
-                
-
-                // until here works very well
-                if (root->data==data){
-                    int temporal=root->data;
-
-                }
-                if (data2==padre2->left && padre2!=nullptr){
-                    if (data2->left==nullptr){
-                        padre2->left=nullptr;
-                        int temporal=data1->data;
+                        delete data1;
+                    }else{
+                        data2=data2->left;
+                        while (data2->right!=nullptr){
+                            padre2=data2;
+                            data2=data2->right;
+                        }
                         data1->data=data2->data;
-                        data2->data=temporal;
-                        cout<<"CASO6"<<endl;
+                        if (padre2->right==data2){
+                            padre2->right=data2->left;
+                        }else{
+                            padre2->left=data2->left;
+                        }
                         delete data2;
-                        sizes--;
-                        return true;
                     }
-                }
-                if (data2->left!=nullptr &&padre2->right==data2 && padre2!=nullptr){
-                    cout<<"went here "<<endl;
-                    padre2->right=data2->left;
-                }else{
-                    if (padre2->right==data2){
-                        padre2->right=nullptr;
                     }
+                    sizes--;
+                    return true;
                 }
-                cout<<"CASO7"<<endl;
-                int temporal=data1->data;
-                data1->data=data2->data;
-                data2->data=temporal;
-                sizes--;                
-                delete data2;
-                return true;
-            
-            
-            
-            }
+                
 
-            
+                
+
+
+
         }
+            
+        
 
         int size() {
             return sizes;
@@ -263,27 +247,30 @@ class BSTree {
         }
 
         void traversePreOrder() {
-            // TODO
+            PreOrderPrint(root);
+            cout<<endl;
         }
 
         void traverseInOrder() {
             InOrderPrint(root);
+            cout<<endl;
         }
 
         void traversePostOrder() {
-            // TODO
+            PostOrderPrint(root);
+            cout<<endl;
         }
 
         Iterator<T> begin() {
-            // TODO
+            return {root,0};
         }
 
         Iterator<T> end() { 
-            // TODO
+            return {root,1};
         }
 
         ~BSTree() {
-            // TODO
+            deleteNodo(root);
         }
 };
 
