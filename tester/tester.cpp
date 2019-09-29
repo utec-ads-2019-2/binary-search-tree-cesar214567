@@ -22,6 +22,7 @@ void Tester::testBSFTree(Mocker mocker, vector<T> elements) {
 
     ASSERT(elements.size() == test->size(), "There is a problem with the insert or size");
 
+    // No llegaste a probar tu remove al parecer
     unsigned int toRemove = mocker.generateRandomInt(1, elements.size());
     for (int j = 0; j < toRemove; ++j) {
         unsigned int index = mocker.generateRandomInt(0, elements.size() - 1);

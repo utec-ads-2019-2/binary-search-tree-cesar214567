@@ -86,6 +86,8 @@ class BSTree {
             bool i=true;
             int temporal=0;
             if (root==nullptr){
+                // Esto deberías poder sacarlo a un solo lugar, para crear el nodo
+                // Cómo has hecho esto? Si el nodo no tiene constructor
                 root=new Node<T>(data);
                 sizes++;
                 return true ;
@@ -175,6 +177,7 @@ class BSTree {
                         if (data1->left!=nullptr){
                             root=data2->left;
                         }
+                        // Dónde colocas los hijos como null?
                         delete data2;
                         sizes--;
                         return true;

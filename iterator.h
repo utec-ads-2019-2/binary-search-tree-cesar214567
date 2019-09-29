@@ -54,6 +54,7 @@ class Iterator {
             if (stack_de_iterador.empty()==false){
                 current=stack_de_iterador.top();
             }else{
+                // ==?
                 current==nullptr;
             }
         }
@@ -66,6 +67,7 @@ class Iterator {
             if(current){
                 return current->data;
             }else{
+                // Mejor un throw, esto te mandará warning
                 cout<<"out of range"<<endl;
             }
         }
